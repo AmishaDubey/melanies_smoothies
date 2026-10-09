@@ -20,7 +20,8 @@ my_dataframe = (
 
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients:",
-    my_dataframe
+    my_dataframe,
+    max_selections=5
 )
 
 if ingredients_list:
@@ -40,12 +41,17 @@ if ingredients_list:
         session.sql(my_insert_stmt).collect()
         st.success("✅ Your Smoothie is ordered!")
 
-# New section to display smoothiefroot nutrition information
+# New section to display SmoothieFroot nutrition information
+
 smoothiefroot_response = requests.get(
     "https://my.smoothiefroot.com/api/fruit/watermelon"
 )
 
-sf_df = st.dataframe(
-    data=smoothiefroot_response.json(),
-    use_container_width=True
-)
+try:
+    sf_df = st.dataframe(
+        data=smoothiefroot_response.json(),
+        use_container_width=True
+    )
+except Exception:
+    st.write("API Status Code:", smoothiefroot_response.status_code)
+    st.text(smoothiefroot_response.text)
