@@ -11,7 +11,7 @@ session = cnx.session()
 name_on_order = st.text_input("Name on Smoothie:")
 
 if name_on_order:
-    st.write("The name on your smoothie will be:", name_on_order)
+    st.write("The name on your Smoothie will be:", name_on_order)
 
 my_dataframe = (
     session.table("SMOOTHIES.PUBLIC.FRUIT_OPTIONS")
@@ -20,26 +20,32 @@ my_dataframe = (
 
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients:",
-    my_dataframe,
-    max_selections=5
+    my_dataframe
 )
 
 if ingredients_list:
-    ingredients_string = " ".join(ingredients_list)
+
+    ingredients_string = ""
+
+    for fruit in ingredients_list:
+        ingredients_string += fruit + " "
 
     my_insert_stmt = f"""
     INSERT INTO SMOOTHIES.PUBLIC.ORDERS
     (INGREDIENTS, NAME_ON_ORDER)
-    VALUES ('{ingredients_string}', '{name_on_order}')
+    VALUES ('{ingredients_string.strip()}', '{name_on_order}')
     """
 
     if st.button("Submit Order"):
         session.sql(my_insert_stmt).collect()
         st.success("✅ Your Smoothie is ordered!")
 
+# New section to display smoothiefroot nutrition information
 smoothiefroot_response = requests.get(
     "https://my.smoothiefroot.com/api/fruit/watermelon"
 )
 
-# st.text(smoothiefroot_response.json())
-sf_df=st.dataframe(data=smoothiefroot_response.json(),use_container_width=True)
+sf_df = st.dataframe(
+    data=smoothiefroot_response.json(),
+    use_container_width=True
+)
