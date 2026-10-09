@@ -30,6 +30,7 @@ if ingredients_list:
 
     for fruit in ingredients_list:
         ingredients_string += fruit + " "
+        st.subheader(fruit_chosen + 'Nutrition information')
 
     my_insert_stmt = f"""
     INSERT INTO SMOOTHIES.PUBLIC.ORDERS
@@ -44,7 +45,7 @@ if ingredients_list:
 # New section to display SmoothieFroot nutrition information
 
 smoothiefroot_response = requests.get(
-    "https://my.smoothiefroot.com/api/fruit/watermelon"
+    "https://my.smoothiefroot.com/api/fruit/" + fruit_chosen
 )
 
 try:
